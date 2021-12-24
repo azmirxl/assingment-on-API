@@ -1,0 +1,103 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/css/bootstrap.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha1/dist/js/bootstrap.bundle.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> 
+</head>
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:weight@100;200;300;400;500;600;700;800&display=swap");
+
+body {
+    background-color: #eee;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300
+}
+
+.search {
+    position: relative;
+    box-shadow: 0 0 40px rgba(51, 51, 51, .1)
+}
+
+.search input {
+    height: 60px;
+    text-indent: 25px;
+    border: 2px solid #d6d4d4
+}
+
+.search .fa-search {
+    position: absolute;
+    top: 20px;
+    left: 16px
+}
+
+.search button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    height: 50px;
+    width: 110px;
+    background: blue
+}
+</style>
+<body onload="searchMeal()">
+    <div class="container">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-md-8">
+                <div class="search"> <i class="fa fa-search"></i> <input type="text" class="form-control" placeholder="Meal Name" id="searchKey"> <button class="btn btn-primary" onclick="searchMeal()">Search</button> </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row" id="content">
+
+        </div>
+      </div>
+</body>
+
+
+<script>
+ 
+    var Url = "https://www.themealdb.com/api/json/v1/1";
+
+    function processCards(data){
+        $("#content").html('');
+        var display = '';
+        if(data && data.meals && data.meals.length > 0){
+            for (var meal of data.meals) {
+                display = display + `
+                <div class="col-md-3">
+                    <div class="card">
+                        <img class="card-img-top" src="`+meal.strMealThumb+`" alt="Card image" style="width:100%">
+                        <div class="card-body">
+                            <h4 class="card-title">`+meal.strMeal+`</h4>
+                            <p>`+meal.strArea+` `+meal.strCategory+`  </p>
+                            <a href="#" class="btn btn-primary stretched-link">See details</a>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }
+            $("#content").html(display);
+        }
+    }
+
+    function searchMeal(){
+        var key = $("#searchKey").val().trim();
+        $.ajax({
+            url: Url +"/search.php?s=" + key,
+            dataType: "json",
+            success : function(res){
+                processCards(res);
+            }
+        });
+    }
+</script>
+</html>
